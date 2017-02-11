@@ -60,7 +60,7 @@ mkproj () {
 }
 
 # Activate a virtual enviroment that is stored in $VENV_HOME
-actvenv () {
+startenv () {
 	# check that that a single argument was passed
 	if [ $# -ne 1 ]; then
 		echo "usage: actvenv ENV_NAME"
@@ -84,7 +84,14 @@ actvenv () {
 
 	# activate venv
 	echo "activating virtual enviroment '$1'"
-	source "$VENV_HOME/$1/bin/activate"
+	source "$VENV_HOME/$1/bin/activate" || return $?
+	# look for .project file in venv and cd to contained directory if it exists
+	if [ -f "$VENV_HOME/$1/.project" ]; then
+		proj_path=`cat "$VENV_HOME/$1/.project"`
+		if [ -d $proj_path ];then
+			cd $proj_path
+		fi
+	fi
 	return 0
 }
 
