@@ -11,16 +11,52 @@ mkvenv () {
 		return 1
 	fi
 	
-	typedef RC
+	declare ret
 	# create new venv in $VENV_HOME if it exists
 	if [ -d "$VENV_HOME" ]; then 
 		echo "creating new virtual enviroment '$1' in $VENV_HOME"
-		python3 -m venv "$VENV_HOME/$1" && RC=$?
+		python3 -m venv "$VENV_HOME/$1"
+		ret=$?
 	else # in current directory
 		echo "creating new virtual enviroment '$1' in current directory"
-		python3 -m venv "./$1" && RC=$?
+		python3 -m venv "./$1"
+		ret=$?
 	fi
-	return RC
+	return $ret
+}
+
+# Create a new virtual enviroment, and associated project in $PROJECT_HOME
+mkproj () {
+	# check that a single argument is passed
+	if [ $# -ne 1 ]; then
+		echo "usage: mkproj ENV_NAME"
+		return 1
+	fi
+	# check that $VENV_HOME is a valid directory
+	if [ ! -d "$VENV_HOME" ]; then
+		echo "error: \$VENV_HOME must be set to a valid directory to use mkproj"
+		return 2
+	fi	
+	# check that $PROJECT_HOME is a valid directory
+	if [ ! -d "$PROJECT_HOME" ]; then
+		echo "error: \$PROJECT_HOME must be set to a valid directory to use mkproj"
+		return 3
+	fi
+	# check that a project of the specified name does not already exist
+	if [ -d "$PROJECT_HOME/$1" ]; then
+		echo "error: cannot create project '$1': already exists in $PROJECT_HOME"
+	fi
+
+	# create new venv in $VENV_HOME
+	echo "creating new virtual enviroment '$1' in $VENV_HOME"
+	python3 -m venv "$VENV_HOME/$1" || return $?
+	# create and cd to new project directory
+	echo "creating new project '$1' in $PROJECT_HOME"
+	mkdir "$PROJECT_HOME/$1" || return $?
+	cd "$PROJECT_HOME/$1" || return $?
+	# create .project file in new venv containting path to project directory
+	echo "$PROJECT_HOME/$1" > "$VENV_HOME/$1/.project" || return $?
+	return 0
 }
 
 # Activate a virtual enviroment that is stored in $VENV_HOME
