@@ -9,11 +9,11 @@ mkvenv () {
 	# check that a single argument is passed
 	if [ $# -eq 1 ]; then
 		# check if $VENV_HOME is defined
-		if [ ! -d "$VENV_HOME" ]; then
-			echo "creating new virtual enviroment $1 in $VENV_HOME"
+		if [ -d "$VENV_HOME" ]; then
+			echo "creating new virtual enviroment '$1' in $VENV_HOME"
 			python3 -m venv "$VENV_HOME/$1" && RC=$?
 		else
-			echo "creating new virtual enviroment $1 in current directory"
+			echo "creating new virtual enviroment '$1' in current directory"
 			python3 -m venv "./$1" && RC=$?
 		fi
 	else
@@ -21,6 +21,35 @@ mkvenv () {
 		RC=1
 	fi
 	return $RC
+}
+
+# Activate a virtual enviroment that is stored in $VENV_HOME
+actvenv () {
+	# check that that a single argument was passed
+	if [ $# -ne 1 ]; then
+		echo "usage: actvenv ENV_NAME"
+		return 1
+	fi
+	# check that $VENV_HOME is a valid directory
+	if [ ! -d "$VENV_HOME" ]; then
+		echo "error: \$VENV_HOME must be set to a valid directory to use actvenv"
+		return 2
+	fi
+	# check that the venv dir exitst in $VENV_HOME
+	if [ ! -d "$VENV_HOME/$1" ]; then
+		echo "error: virtual enviroment '$1' does not exit in $VENV_HOME"
+		return 3
+	fi
+	# check that venv contains the bin/activate script
+	if [ ! -f "$VENV_HOME/$1/bin/activate" ]; then
+		echo "error: virtual enviroment '$1' is malformed: bin/activte does not exist"
+		return 4
+	fi
+
+	# activate venv
+	echo "activating virtual enviroment '$1'"
+	source "$VENV_HOME/$1/bin/activate"
+	return 0
 }
 
 ## INITIALISATION CHECKS ##
