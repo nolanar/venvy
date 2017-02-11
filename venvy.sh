@@ -5,22 +5,22 @@
 # If $VENV_HOME is defined then the new venv is created in that directory,
 # otherwise it will be created in the current directory.
 mkvenv () {
-	typeset RC
 	# check that a single argument is passed
-	if [ $# -eq 1 ]; then
-		# check if $VENV_HOME is defined
-		if [ -d "$VENV_HOME" ]; then
-			echo "creating new virtual enviroment '$1' in $VENV_HOME"
-			python3 -m venv "$VENV_HOME/$1" && RC=$?
-		else
-			echo "creating new virtual enviroment '$1' in current directory"
-			python3 -m venv "./$1" && RC=$?
-		fi
-	else
+	if [ $# -ne 1 ]; then
 		echo "usage: mkvenv ENV_NAME"
-		RC=1
+		return 1
 	fi
-	return $RC
+	
+	typedef RC
+	# create new venv in $VENV_HOME if it exists
+	if [ -d "$VENV_HOME" ]; then 
+		echo "creating new virtual enviroment '$1' in $VENV_HOME"
+		python3 -m venv "$VENV_HOME/$1" && RC=$?
+	else # in current directory
+		echo "creating new virtual enviroment '$1' in current directory"
+		python3 -m venv "./$1" && RC=$?
+	fi
+	return RC
 }
 
 # Activate a virtual enviroment that is stored in $VENV_HOME
@@ -55,8 +55,6 @@ actvenv () {
 ## INITIALISATION CHECKS ##
 
 # Check that $VENV_HOME is a valid directory if defined
-if [ -n "$VENV_HOME" ]; then
-	if [ ! -d "$VENV_HOME" ]; then
-		echo "venvy: warning: \$VENV_HOME is not set to a valid directory hence will be ignored"
-	fi
+if [ -n "$VENV_HOME" ] && [ ! -d "$VENV_HOME" ]; then
+	echo "venvy: warning: \$VENV_HOME is not set to a valid directory hence will be ignored"
 fi
