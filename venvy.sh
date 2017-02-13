@@ -4,7 +4,7 @@
 #
 # If $VENV_HOME is defined then the new venv is created in that directory,
 # otherwise it will be created in the current directory.
-mkvenv () {
+mkenv () {
 	# check that a single argument is passed
 	if [ $# -ne 1 ]; then
 		echo "usage: mkvenv ENV_NAME"
@@ -49,7 +49,7 @@ mkproj () {
 
 	# create new venv in $VENV_HOME
 	echo "creating new virtual enviroment '$1' in $VENV_HOME"
-	python3 -m venv "$VENV_HOME/$1" || return $?
+	mkenv "$VENV_HOME/$1" || return $?
 	# create and cd to new project directory
 	echo "creating new project '$1' in $PROJECT_HOME"
 	mkdir "$PROJECT_HOME/$1" || return $?
