@@ -117,3 +117,13 @@ stopenv () {
 if [ -n "$VENV_HOME" ] && [ ! -d "$VENV_HOME" ]; then
 	echo "venvy: warning: \$VENV_HOME is not set to a valid directory hence will be ignored"
 fi
+
+# Set up tab completion
+_venv_list_tab () {
+		COMPREPLY=( $(compgen -W "`	[ -n $VENV_HOME ] &&
+			cd $VENV_HOME &&
+			ls -d -- */ | cut -d '/' -f 1
+			`" -- ${COMP_WORDS[COMP_CWORD]}))
+}
+complete -o default -o nospace -F _venv_list_tab startenv
+unset _venv_list
