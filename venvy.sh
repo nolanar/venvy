@@ -132,11 +132,15 @@ stopenv () {
 	return $ret
 }
 
-## INITIALISATION CHECKS ##
 
-# Check that $VENV_HOME is a valid directory if defined
-if [ -n "$VENV_HOME" ] && [ ! -d "$VENV_HOME" ]; then
-	echo "venvy: warning: \$VENV_HOME is not set to a valid directory hence will be ignored"
+## INITIALISATION ##
+
+# Check if $VENV_HOME is defined and create directory if it does not exist
+if [ -n "$VENV_HOME" ]; then
+	if [ ! -d "$VENV_HOME" ]; then
+		echo "venvy: creating directory $VENV_HOME"
+		mkdir -p || echo "venvy: could not create directory $VENV_HOME"
+	fi
 fi
 
 # Set up tab completion
