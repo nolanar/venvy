@@ -82,6 +82,11 @@ startenv () {
 		return 4
 	fi
 
+	# look for preactivate hook in $VENV_HOME
+	if [ -f "$VENV_HOME/_HOOKS_/preactivate" ]; then
+		source $VENV_HOME/_HOOKS_/preactivate
+	fi
+
 	# activate venv
 	echo "activating virtual enviroment '$1'"
 	source "$VENV_HOME/$1/bin/activate" || return $?
@@ -92,6 +97,12 @@ startenv () {
 			cd $proj_path
 		fi
 	fi
+
+	# look for postactivate hook in $VENV_HOME
+	if [ -f "$VENV_HOME/_HOOKS_/postactivate" ]; then
+		source $VENV_HOME/_HOOKS_/postactivate
+	fi
+
 	return 0
 }
 
@@ -103,10 +114,20 @@ stopenv () {
 		return 1
 	fi
 
+	# look for predeactivate hook in $VENV_HOME
+	if [ -f "$VENV_HOME/_HOOKS_/predeactivate" ]; then
+		source $VENV_HOME/_HOOKS_/predeactivate
+	fi
+
 	# call the python venv defined deactivate function
 	echo "deactivating virtual enviroment '$VIRTUAL_ENV'"
 	deactivate
 	ret=$?
+
+	# look for postdeactivate hook in $VENV_HOME
+	if [ -f "$VENV_HOME/_HOOKS_/postdeactivate" ]; then
+		source $VENV_HOME/_HOOKS_/postdeactivate
+	fi
 
 	return $ret
 }
@@ -120,10 +141,13 @@ fi
 
 # Set up tab completion
 _venv_list_tab () {
-		COMPREPLY=( $(compgen -W "`	[ -n $VENV_HOME ] &&
-			cd $VENV_HOME &&
-			ls -d -- */ | cut -d '/' -f 1
-			`" -- ${COMP_WORDS[COMP_CWORD]}))
+	# list all directories in $VENV_HOME
+	# cut trailing '/'
+	# remove _HOOKS_ dir from list
+	COMPREPLY=( $(compgen -W "`	[ -n $VENV_HOME ] &&
+		cd $VENV_HOME &&
+		ls -d -- */ | cut -d '/' -f 1 | grep -v '^_HOOKS_$'
+		`" -- ${COMP_WORDS[COMP_CWORD]}))
 }
 complete -o default -o nospace -F _venv_list_tab startenv
 unset _venv_list
