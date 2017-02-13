@@ -95,6 +95,22 @@ startenv () {
 	return 0
 }
 
+# Deactivate the currently active virtual enviroment
+stopenv () {
+	# check that $VIRTUAL_ENV and the function deactivate are defined
+	if [ -z "$VIRTUAL_ENV" ] && [ ! "`type -t deactivate`" = 'function' ]; then
+		echo "error: no virtual enviroment currently active"
+		return 1
+	fi
+
+	# call the python venv defined deactivate function
+	echo "deactivating virtual enviroment '$VIRTUAL_ENV'"
+	deactivate
+	ret=$?
+
+	return $ret
+}
+
 ## INITIALISATION CHECKS ##
 
 # Check that $VENV_HOME is a valid directory if defined
