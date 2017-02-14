@@ -27,3 +27,5 @@ Hooks are used to run user defined scripts before or after commands. The followi
 * `postactivate` :- run after startenv
 * `predeactivate` :- run before stopenv
 * `postdeactivate` :- run after stopenv
+
+**Note:** `VENV_HOME`must be defined to use hooks *(see section on virtual enviroment directory above)*
