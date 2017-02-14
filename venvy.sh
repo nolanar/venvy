@@ -43,13 +43,14 @@ mkproj () {
 		return 3
 	fi
 	# check that a project of the specified name does not already exist
-	if [ -d "$PROJECT_HOME/$1" ]; then
-		echo "error: cannot create project '$1': already exists in $PROJECT_HOME"
+	if [ -e "$PROJECT_HOME/$1" ]; then
+		echo "error: cannot create project '$1': File exists in $PROJECT_HOME"
+		return 4
 	fi
 
 	# create new venv in $VENV_HOME
 	echo "creating new virtual enviroment '$1' in $VENV_HOME"
-	mkenv "$VENV_HOME/$1" || return $?
+	mkenv "$1" || return $?
 	# create and cd to new project directory
 	echo "creating new project '$1' in $PROJECT_HOME"
 	mkdir "$PROJECT_HOME/$1" || return $?
