@@ -135,15 +135,23 @@ stopenv () {
 
 ## INITIALISATION ##
 
-# Check if $VENV_HOME is defined and create directory if it does not exist
+# Check if $VENV_HOME is defined
 if [ -n "$VENV_HOME" ]; then
+	# create directory if it does not exist
 	if [ ! -d "$VENV_HOME" ]; then
 		echo "venvy: creating directory $VENV_HOME"
-		mkdir -p || echo "venvy: could not create directory $VENV_HOME"
+		mkdir -p "$VENV_HOME" || echo "venvy: could not create directory $VENV_HOME"
 	fi
+
+	# create any missing hooks from $VENV_HOME/HOOKS_
+	for hook in preactivate postactivate predeactivate postdeactivate; do
+		if [ ! -e "$VENV_HOME/_HOOKS_/$hook" ]; then
+			echo "# $hook hook" > "$VENV_HOME/_HOOKS_/$hook"
+		fi
+	done
 fi
 
-# Set up tab completion
+# Setup tab completion
 _venv_list_tab () {
 	# list all directories in $VENV_HOME
 	# cut trailing '/'
