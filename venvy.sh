@@ -49,7 +49,6 @@ mkproj () {
 	fi
 
 	# create new venv in $VENV_HOME
-	echo "creating new virtual enviroment '$1' in $VENV_HOME"
 	mkenv "$1" || return $?
 	# create and cd to new project directory
 	echo "creating new project '$1' in $PROJECT_HOME"
