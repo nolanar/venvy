@@ -50,7 +50,7 @@ startenv () {
 # Deactivate the currently active virtual enviroment
 stopenv () {
 	# check that $VIRTUAL_ENV and the function deactivate are defined
-	if [ -z "$VIRTUAL_ENV" ] && [ ! "`type -t deactivate`" = 'function' ]; then
+	if [ -z "$VIRTUAL_ENV" ] || [ ! "`type -t deactivate`" = 'function' ]; then
 		echo "error: no virtual enviroment currently active"
 		return 1
 	fi
