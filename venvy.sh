@@ -19,7 +19,7 @@ startenv () {
 	fi
 	# check that venv contains the bin/activate script
 	if [ ! -f "$VENV_HOME/$1/bin/activate" ]; then
-		echo "error: virtual enviroment '$1' is malformed: bin/activte does not exist"
+		echo "error: virtual enviroment '$1' is malformed: bin/activate does not exist"
 		return 4
 	fi
 
