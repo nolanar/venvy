@@ -17,7 +17,7 @@ to you shell startup script (`.bashrc`, `.profile` etc.) if you wish to use a vi
 
 ## Commands
 * `mkenv ENV_NAME` :- create a new virtual enviroment
-* `mkproj PROJ_NAME` :- create a new virtual enviroment in $VENV_HOME and project in $PROJCET_HOME
+* `mkproj PROJ_NAME` :- create a new virtual enviroment in $VENV_HOME and project in $PROJECT_HOME
 * `startenv ENV_NAME` :- activate a virtual enviroment stored in $VENV_HOME
 * `stopenv` :- deactivate the currently active virtual enviroment
 
