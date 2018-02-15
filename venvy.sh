@@ -34,7 +34,7 @@ startenv () {
 	fi
 
 	# activate venv
-	echo "activating virtual enviroment '$1'"
+	echo "activating virtual enviroment '$VENV_HOME/$1'"
 	source "$VENV_HOME/$1/bin/activate" || return $?
 	# look for .project file in venv and cd to contained directory if it exists
 	if [ -f "$VENV_HOME/$1/.project" ]; then
