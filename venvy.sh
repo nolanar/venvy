@@ -44,34 +44,39 @@ startenv () {
 		source $VENV_HOME/_HOOKS_/postactivate
 	fi
 
+	# Create command to: 
+	# Deactivate the currently active virtual enviroment
+	stopenv () {
+		# check that $VIRTUAL_ENV and the function deactivate are defined
+		if [ -z "$VIRTUAL_ENV" ] || [ ! "`type -t deactivate`" = 'function' ]; then
+			echo "error: no virtual enviroment currently active"
+			return 1
+		fi
+
+		# look for predeactivate hook in $VENV_HOME
+		if [ -f "$VENV_HOME/_HOOKS_/predeactivate" ]; then
+			source $VENV_HOME/_HOOKS_/predeactivate
+		fi
+
+		# call the python venv defined deactivate function
+		echo "deactivating virtual enviroment '$VIRTUAL_ENV'"
+		deactivate
+		ret=$?
+
+		# look for postdeactivate hook in $VENV_HOME
+		if [ -f "$VENV_HOME/_HOOKS_/postdeactivate" ]; then
+			source $VENV_HOME/_HOOKS_/postdeactivate
+		fi
+
+		# self-destruct function
+		unset -f stopenv
+
+		return $ret
+	}
+
 	return 0
 }
 
-# Deactivate the currently active virtual enviroment
-stopenv () {
-	# check that $VIRTUAL_ENV and the function deactivate are defined
-	if [ -z "$VIRTUAL_ENV" ] || [ ! "`type -t deactivate`" = 'function' ]; then
-		echo "error: no virtual enviroment currently active"
-		return 1
-	fi
-
-	# look for predeactivate hook in $VENV_HOME
-	if [ -f "$VENV_HOME/_HOOKS_/predeactivate" ]; then
-		source $VENV_HOME/_HOOKS_/predeactivate
-	fi
-
-	# call the python venv defined deactivate function
-	echo "deactivating virtual enviroment '$VIRTUAL_ENV'"
-	deactivate
-	ret=$?
-
-	# look for postdeactivate hook in $VENV_HOME
-	if [ -f "$VENV_HOME/_HOOKS_/postdeactivate" ]; then
-		source $VENV_HOME/_HOOKS_/postdeactivate
-	fi
-
-	return $ret
-}
 
 # Create a new virtual enviroment
 #
