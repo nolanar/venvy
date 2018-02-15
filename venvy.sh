@@ -164,4 +164,3 @@ _venv_list_tab () {
 		`" -- ${COMP_WORDS[COMP_CWORD]}))
 }
 complete -o default -o nospace -F _venv_list_tab startenv
-unset _venv_list
