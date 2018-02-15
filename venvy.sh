@@ -23,6 +23,11 @@ startenv () {
 		return 4
 	fi
 
+	# deactivate any running venv
+	if [ "$(type stopenv 2>/dev/null | grep -i function)" ]; then 
+		stopenv
+	fi
+
 	# look for preactivate hook in $VENV_HOME
 	if [ -f "$VENV_HOME/_HOOKS_/preactivate" ]; then
 		source $VENV_HOME/_HOOKS_/preactivate
@@ -48,7 +53,7 @@ startenv () {
 	# Deactivate the currently active virtual enviroment
 	stopenv () {
 		# check that $VIRTUAL_ENV and the function deactivate are defined
-		if [ -z "$VIRTUAL_ENV" ] || [ ! "`type -t deactivate`" = 'function' ]; then
+		if [ -z "$VIRTUAL_ENV" ] || [ ! "$(type deactivate 2>/dev/null | grep -i function)" ]; then
 			echo "error: no virtual enviroment currently active"
 			return 1
 		fi
