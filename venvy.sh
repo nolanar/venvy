@@ -155,6 +155,11 @@ if [ -n "$VENV_HOME" ]; then
 		mkdir -p "$VENV_HOME" || echo "venvy: could not create directory $VENV_HOME"
 	fi
 
+	# create hooks directory if missing
+	if [ ! -d "$VENV_HOME/_HOOKS_/" ]; then
+		mkdir -p "$VENV_HOME/_HOOKS_/" || echo "venvy: could not create directory $VENV_HOME/_HOOKS_/"
+	fi
+
 	# create any missing hooks from $VENV_HOME/HOOKS_
 	for hook in preactivate postactivate predeactivate postdeactivate; do
 		if [ ! -e "$VENV_HOME/_HOOKS_/$hook" ]; then
